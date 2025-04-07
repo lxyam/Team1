@@ -98,22 +98,45 @@ OPENAI_API_BASE=your_api_base_url
 
 ### 目录结构
 ```
-├── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Home.tsx
-│   │   │   ├── Interview.tsx
-│   │   │   └── Results.tsx
-│   │   └── components/
-├── backend/
-│   ├── app.py
-│   ├── services/
-│   │    ├── interview_generator.py
-│   │    └── answer_assessor.py
-│   ├── parser/
-|   ├── qa_enging/
-
-
+├─backend/ 后端代码
+│  ├─__init__.py
+│  ├─pipeline.py                 # 核心流程处理
+│  ├─report.py                   # 报告生成模块
+│  ├─code/
+│  │  └─code_recommender.py      # 编程能力评估模块
+│  ├─parser/
+│  │  ├─__init__.py
+│  │  └─extractor.py             # 简历解析器
+│  ├─qa_engine/                  # 问答引擎
+│  │  ├─__init__.py
+│  │  ├─advantages.py            # 个人优势评估
+│  │  ├─item.py                  # 项目经验评估
+│  │  └─item_enhanced.py         # 增强项目评估
+│  └─test/                       # 测试目录
+│      ├─__init__.py
+│      ├─app.py                  # 测试应用
+│      ├─test_extractor.py       # 解析器测试
+│      └─test_qa.py              # 问答测试
+│
+├─demo/                          # 演示示例
+│  ├─README.md
+│  ├─backend/
+│  │  ├─app.py                   # 示例后端应用
+│  │  ├─requirements.txt         # 依赖配置
+│  │  └─services/                # 服务模块
+│  └─frontend/                   # 示例前端
+│      ├─package.json            # 项目配置
+│      ├─public/                 # 静态资源
+│      ├─src/                    # 源代码
+│      └─tsconfig.json           # TypeScript配置
+│
+├─frontend/                      # 主项目前端
+│  └─frontend.py                 # 前端入口
+│
+├─.gitignore                     # Git忽略配置
+├─LICENSE                        # 许可证
+├─README.md                      # 项目说明
+└─requirements.txt               # Python依赖
 ```
 
 ## 技术栈
@@ -128,4 +151,4 @@ OPENAI_API_BASE=your_api_base_url
 - Python
 - Flask
 - OpenAI API
-- dotenv 
+- dotenv
