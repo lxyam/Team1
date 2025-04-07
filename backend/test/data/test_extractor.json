@@ -1,0 +1,54 @@
+{
+  "advantages": [
+    "学习能力强",
+    "逻辑思维清晰",
+    "善于跨团队沟通合作"
+  ],
+  "education": [
+    {
+      "degree": "本科",
+      "graduation_year": "2018",
+      "major": "计算机科学与技术",
+      "school": "北京大学"
+    }
+  ],
+  "projects": [
+    {
+      "achievements": [
+        "系统上线后准确率提升至92%"
+      ],
+      "description": "基于NLP的简历自动解析平台",
+      "name": "智能简历分析系统",
+      "responsibilities": [
+        "实现简历解析模块",
+        "与大模型对接"
+      ],
+      "technologies": [
+        "Python",
+        "FastAPI",
+        "PostgreSQL",
+        "OpenAI API"
+      ]
+    }
+  ],
+  "skills": [
+    "Python",
+    "JavaScript",
+    "PostgreSQL",
+    "Docker",
+    "OpenAI API"
+  ],
+  "work_experience": [
+    {
+      "achievements": [
+        "主导重构任务调度模块，性能提升30%"
+      ],
+      "company": "字节跳动",
+      "duration": "2019年-2021年",
+      "position": "后端开发工程师",
+      "responsibilities": [
+        "负责公司内部API系统开发与优化，提升服务稳定性"
+      ]
+    }
+  ]
+}
