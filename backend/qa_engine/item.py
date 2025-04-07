@@ -1,21 +1,17 @@
-import os
-import json
 from typing import List, Dict, Any
-from openai import OpenAI
-from dotenv import load_dotenv
+from .item_enhanced import ProjectQAGenerator as EnhancedProjectQAGenerator
 
-load_dotenv()
-
-class ProjectQAGenerator:
+class ProjectQAGenerator(EnhancedProjectQAGenerator):
+    """项目问答生成器
+    
+    继承自增强版问答生成器，提供更强大的问答生成功能：
+    1. 多轮追问机制 - 支持主问题和相关追问的组合
+    2. 细化的评分维度 - 包括技术理解、实践经验、解决方案和表达能力
+    3. 项目类型识别 - 根据技术栈自动判断项目类型
+    4. 智能答案生成 - 基于项目背景生成专业、全面的标准答案
+    """
     def __init__(self):
-        self.api_key = os.getenv("OPENAI_API_KEY")
-        self.api_base = os.getenv("OPENAI_API_BASE")
-        self.model = os.getenv("OPENAI_MODEL", "deepseek-chat")
-
-        self.client = OpenAI(
-            api_key=self.api_key,
-            base_url=self.api_base
-        )
+        super().__init__()
 
     def generate_questions(self, project_data: Dict[str, Any], question_types: List[str]) -> List[Dict[str, Any]]:
         """根据项目信息和问题类型生成问答数据
@@ -27,66 +23,30 @@ class ProjectQAGenerator:
         Returns:
             问答数据列表，每项包含question, answer, type, score_criteria字段
         """
-        system_prompt = """
-        你是一个专业的技术面试官。请根据候选人的项目经验，生成针对性的面试问题和参考答案。
+        # 调用增强版生成器生成问答数据
+        enhanced_qa_data = super().generate_questions(project_data, question_types)
         
-        请根据提供的项目信息和指定的问题类型，生成相应的问答数据。每个问题应包含问题内容、参考答案、问题类型和评分标准。
-        
-        问题类型说明：
-        - basic: 基础问题，验证项目基本情况和技术选型
-        - technical: 技术问题，针对使用的核心技术提出深度问题
-        - design: 设计问题，考察系统设计和架构能力
-        - challenge: 挑战问题，探讨项目难点和解决方案
-        
-        返回的JSON格式如下：
-        [
-            {
-                "question": "问题内容",
-                "answer": "参考答案",
-                "type": "问题类型(basic/technical/design/challenge)",
-                "score_criteria": [
-                    {"score": 1, "description": "评分标准描述1"},
-                    {"score": 3, "description": "评分标准描述2"},
-                    {"score": 5, "description": "评分标准描述3"}
-                ]
-            }
-        ]
-        
-        注意：
-        1. 直接返回JSON数据，不要添加任何markdown标记
-        2. 每个问题类型至少生成1-2个问题
-        3. 评分标准应包含3-5个等级，分数从低到高排列
-        4. 问题和答案应该具体、专业，与项目技术相关
-        """
+        # 转换为原有格式
+        qa_data = []
+        for item in enhanced_qa_data:
+            # 合并主问题和追问
+            questions = [item['main_question']] + item['follow_up_questions']
+            answers = [item['answers']['main']] + item['answers']['follow_up']
+            
+            # 提取评分标准
+            score_criteria = []
+            for dimension in item['scoring_dimensions'].values():
+                score_criteria.extend(dimension['criteria'])
+            
+            # 添加到结果列表
+            for q, a in zip(questions, answers):
+                qa_data.append({
+                    'question': q,
+                    'answer': a,
+                    'type': item['type'],
+                    'score_criteria': score_criteria
+                })
 
-        try:
-            project_context = f"""
-            项目名称：{project_data.get('name', '')}
-            项目描述：{project_data.get('description', '')}
-            使用技术：{', '.join(project_data.get('technologies', []))}
-            项目职责：{', '.join(project_data.get('responsibilities', []))}
-            项目成就：{', '.join(project_data.get('achievements', []))}
-            问题类型：{', '.join(question_types)}
-            """
+        # print(qa_data)
 
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": project_context}
-                ],
-                stream=False
-            )
-
-            content = response.choices[0].message.content.strip()
-            if content.startswith('```'):
-                content = content.split('\n', 1)[1].rsplit('\n', 1)[0]
-            if content.startswith('json'):
-                content = content.split('\n', 1)[1]
-
-            qa_data = json.loads(content)
-            return qa_data
-
-        except Exception as e:
-            print(f"[❌] 问题生成失败: {e}")
-            return []
+        return qa_data
