@@ -308,7 +308,7 @@ class InterviewSession:
     def evaluate_answers(self) -> Dict[str, Any]:
         """评估用户回答"""
         try:
-            user_answers = [msg["content"] for msg in self.conversation_history if msg["role"] == "user"]
+            # user_answers = [msg["content"] for msg in self.conversation_history if msg["role"] == "user"]
             
             evaluation_prompt = f"""
             请评估候选人的回答质量。以下是对话历史：

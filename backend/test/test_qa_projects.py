@@ -166,16 +166,25 @@ def main():
                 
                 # 2. 进行多轮对话
                 print("\n=== 开始面试 ===")
-                print(f"\n=== 第{1}轮对话 ===")
-                print(f"面试官: {session_data['question']}")
-                user_answer = input("请输入你的回答: ")
-                print(f"参考答案: {session_data['candidate_answer']}")
                 max_rounds = 5
-                for round_num in range(2, max_rounds + 1):
+                for round_num in range(1, max_rounds + 1):
                     print(f"\n=== 第{round_num}轮对话 ===")
                     # 获取用户输入
-                    # user_answer = input("请输入你的回答: ")
+                    if round_num == 1:
+                        print(f"面试官: {session_data['question']}")
+                        print("===========================")
+                        user_answer = input("请输入你的回答: ")
+                        print("===========================")
+                        print(f"参考答案: {session_data['candidate_answer']}")
+                        print("===========================")
                     # 继续面试
+                    else:
+                        print(f"面试官: {result['question']}")
+                        print("===========================")
+                        user_answer = input("请输入你的回答: ")
+                        print("===========================")
+                        print(f"参考答案: {result['candidate_answer']}")
+                        print("===========================")
                     try:
                         response = requests.post(
                             "http://127.0.0.1:5088/api/interview/continue",
@@ -191,11 +200,11 @@ def main():
                                 print("\n=== 面试结束 ===")
                                 print("评估结果:")
                                 print(json.dumps(result["evaluation"], ensure_ascii=False, indent=2))
+                                return  # 立即退出main函数
                                 break
-                            else:
-                                print(f"面试官: {result['question']}")
-                                user_answer = input("请输入你的回答: ")
-                                print(f"参考答案: {result['candidate_answer']}")
+                            # else:
+                            #     print(f"面试官: {result['question']}")
+                            #     print("===========================")
                         else:
                             print(f"继续面试失败: {response.text}")
                             break
@@ -204,32 +213,6 @@ def main():
                         print("请检查网络连接或API服务可用性")
                         break
 
-                # 3. 获取面试状态
-                try:
-                    response = requests.get(
-                        f"http://127.0.0.1:5088/api/interview/{session_id}/status",
-                        timeout=10
-                    )
-                    if response.status_code == 200:
-                        status = response.json()
-                        print(f"\n面试状态: 已完成{status['rounds_completed']}轮，共{status['total_rounds']}轮")
-                    else:
-                        print(f"获取面试状态失败: {response.text}")
-                except requests.exceptions.RequestException as e:
-                    print(f"获取状态请求失败: {str(e)}")
-
-                # 4. 结束面试
-                try:
-                    response = requests.delete(
-                        f"http://127.0.0.1:5088/api/interview/{session_id}",
-                        timeout=10
-                    )
-                    if response.status_code == 200:
-                        print("\n面试已结束")
-                    else:
-                        print(f"结束面试失败: {response.text}")
-                except requests.exceptions.RequestException as e:
-                    print(f"结束面试请求失败: {str(e)}")
             else:
                 print(f"开始面试失败: {response.text}")
         except requests.exceptions.RequestException as e:

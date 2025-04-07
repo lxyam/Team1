@@ -113,36 +113,3 @@ def continue_interview():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-@flask_router.route("/interview/<session_id>/status", methods=['GET'])
-def get_interview_status(session_id):
-    """获取面试会话状态"""
-    try:
-        session = interview_sessions.get(session_id)
-        if not session:
-            return jsonify({"error": "面试会话不存在"}), 404
-        
-        return jsonify({
-            "rounds_completed": len(session.conversation_history) // 2,  # 每轮包含一个问题和一个回答
-            "total_rounds": 5,
-            "conversation_history": session.conversation_history
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@flask_router.route("/interview/<session_id>", methods=['DELETE'])
-def end_interview(session_id):
-    """结束面试会话"""
-    try:
-        if session_id in interview_sessions:
-            session = interview_sessions[session_id]
-            evaluation = session.evaluate_answers()
-            del interview_sessions[session_id]
-            return jsonify({
-                "status": "success",
-                "message": "面试会话已结束",
-                "evaluation": evaluation
-            })
-        return jsonify({"error": "面试会话不存在"}), 404
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500 
