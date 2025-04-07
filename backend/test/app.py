@@ -125,6 +125,6 @@ def generate_questions():
         logger.error(f"Question generation failed: {str(e)}", exc_info=True)
         return jsonify({"error": "Question generation failed", "details": str(e)}), 500
 
-# 取消注释启动代码，使用生产模式
-if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5088, debug=False)
+
+# if __name__ == "__main__":
+#     app.run(host="127.0.0.1", port=5088, debug=False)

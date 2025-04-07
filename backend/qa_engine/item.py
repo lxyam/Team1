@@ -247,11 +247,10 @@ class InterviewSession:
     def continue_interview(self, user_answer: str) -> Optional[Dict[str, str]]:
         """继续面试，根据用户回答生成下一个问题"""
         try:
-            if len(self.conversation_history) >= 5:  # 最多5轮对话
-                return None
-
             self.conversation_history.append({"role": "user", "content": user_answer})
-
+            if len(self.conversation_history) >= 10:  # 最多5轮对话
+                return None
+            
             # 生成面试官的下一个问题
             conversation_context = "\n".join([
                 f"{msg['role']}: {msg['content']}" 
