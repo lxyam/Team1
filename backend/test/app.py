@@ -4,10 +4,25 @@ import logging
 import docx
 import PyPDF2
 from flask import Flask, request, jsonify
+from backend.qa_engine import interview_flask_router
 
 app = Flask(__name__)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+
+# 调整日志级别为WARNING，减少输出
+logging.basicConfig(level=logging.WARNING)
+
+# 设置werkzeug日志级别为WARNING
+logging.getLogger('werkzeug').setLevel(logging.WARNING)
+
+# 注册面试API路由
+app.register_blueprint(interview_flask_router, url_prefix='/api')
+
+# 添加一个直接的测试路由，不通过蓝图
+@app.route('/test', methods=['GET'])
+def direct_test():
+    """直接测试Flask应用是否正常工作"""
+    return jsonify({"message": "Flask应用正常工作", "status": "success"}), 200
 
 def extract_text_from_pdf(pdf_file):
     try:
@@ -110,5 +125,6 @@ def generate_questions():
         logger.error(f"Question generation failed: {str(e)}", exc_info=True)
         return jsonify({"error": "Question generation failed", "details": str(e)}), 500
 
-# if __name__ == "__main__":
-#     app.run(host="127.0.0.1", port=5088, debug=True)
+# 取消注释启动代码，使用生产模式
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=5088, debug=False)
