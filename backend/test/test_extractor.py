@@ -19,7 +19,7 @@ def run_flask_app():
     app.run(host="127.0.0.1", port=5088)
 
 def test_resume_extraction():
-    test_file_path = os.path.join(os.path.dirname(__file__), "test.docx")
+    test_file_path = os.path.join(os.path.dirname(__file__), "data/test.docx")
     assert os.path.exists(test_file_path), "测试文件不存在"
 
     with open(test_file_path, "rb") as f:
@@ -29,6 +29,18 @@ def test_resume_extraction():
 
         data = response.json()
         print("接口返回的数据：", json.dumps(data, indent=2, ensure_ascii=False))
+
+        # 构造保存路径
+        output_dir = os.path.join(os.path.dirname(__file__), "data")
+        os.makedirs(output_dir, exist_ok=True)  # 如果 data 目录不存在，自动创建
+
+        output_file = os.path.join(output_dir, "test_extractor.json")
+
+        # 保存为 JSON 文件
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+        print(f"✅ 数据已保存到 {output_file}")
 
         assert isinstance(data, dict), "返回数据不是字典类型"
         assert "education" in data, "缺少education字段"

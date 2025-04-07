@@ -7,9 +7,13 @@ load_dotenv()
 
 class ResumeExtractor:
     def __init__(self):
-        self.api_key = os.getenv("OPENAI_API_KEY")
-        self.api_base = os.getenv("OPENAI_API_BASE")
-        self.model = os.getenv("OPENAI_MODEL", "deepseek-chat")
+        OPENAI_API_KEY="sk-06a1fc23f04940cf93e06e4b39e1f949"
+        OPENAI_API_BASE="https://api.deepseek.com"
+        OPENAI_MODEL = "deepseek-chat"
+
+        self.api_key = OPENAI_API_KEY
+        self.api_base = OPENAI_API_BASE
+        self.model = OPENAI_MODEL
 
         self.client = OpenAI(
             api_key=self.api_key,
