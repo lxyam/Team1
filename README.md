@@ -103,9 +103,13 @@ OPENAI_API_BASE=your_api_base_url
 │   │   └── components/
 ├── backend/
 │   ├── app.py
-│   └── services/
-│       ├── interview_generator.py
-│       └── answer_assessor.py
+│   ├── services/
+│   │    ├── interview_generator.py
+│   │    └── answer_assessor.py
+│   ├── parser/
+|   ├── qa_enging/
+
+
 ```
 
 ## 技术栈
