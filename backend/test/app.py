@@ -1,12 +1,20 @@
 import io
 import json
 import logging
+import sys
+import os
+
+# 添加项目根目录到 Python 路径
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import docx
 import PyPDF2
 from flask import Flask, request, jsonify
-from backend.qa_engine import interview_flask_router
+from flask_cors import CORS
+from qa_engine.interview_api_flask import flask_router as interview_flask_router
 
 app = Flask(__name__)
+CORS(app)  # 启用跨域支持
 logger = logging.getLogger(__name__)
 
 # 调整日志级别为WARNING，减少输出
@@ -16,7 +24,7 @@ logging.basicConfig(level=logging.WARNING)
 logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
 # 注册面试API路由
-app.register_blueprint(interview_flask_router, url_prefix='/api')
+app.register_blueprint(interview_flask_router, url_prefix='/interview')
 
 # 添加一个直接的测试路由，不通过蓝图
 @app.route('/test', methods=['GET'])
@@ -126,5 +134,6 @@ def generate_questions():
         return jsonify({"error": "Question generation failed", "details": str(e)}), 500
 
 
-# if __name__ == "__main__":
-#     app.run(host="127.0.0.1", port=5088, debug=False)
+if __name__ == "__main__":
+    print("Starting AI Interview Backend Server on http://127.0.0.1:5000")
+    app.run(host="127.0.0.1", port=5000, debug=False)
