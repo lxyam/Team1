@@ -1,46 +1,57 @@
-# Getting Started with Create React App
+# 智能简历分析系统
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+一个为技术岗位求职者设计的自测工具，用于检测简历中的描述是否经得起深度提问，帮助用户发现简历中的不足并查漏补缺。
 
-## Available Scripts
+## 功能特点
 
-In the project directory, you can run:
+- 简历分析：上传并分析简历内容，找出需要补充的信息
+- 信息补充：允许用户对简历中不足的地方进行补充说明
+- 模拟面试：根据简历内容生成针对性问题，模拟真实面试场景
+- 智能追问：根据用户回答内容进行有针对性的追问
+- 综合评估：对用户的回答进行全面分析，给出评估结果和改进建议
 
-### `npm start`
+## 技术栈
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Next.js 14
+- React 18
+- TypeScript
+- TailwindCSS
+- React Dropzone
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 开发环境设置
 
-### `npm test`
+1. 安装依赖：
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm install
+```
 
-### `npm run build`
+2. 启动开发服务器：
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm run dev
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. 在浏览器中打开 http://localhost:3000 查看应用
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 页面说明
 
-### `npm run eject`
+1. 首页（/）：简历上传页面
+   - 用户可以上传简历（PDF、DOC、DOCX 格式）
+   - 系统会分析简历内容
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+2. 评估页面（/evaluation）：简历评估结果和补充信息页面
+   - 显示简历分析结果
+   - 允许用户补充相关信息
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. 面试页面（/interview）：模拟面试问答页面
+   - 系统根据简历内容提问
+   - 可能会根据用户回答进行追问
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+4. 评估结果页面（/assessment）：最终评估结果页面
+   - 显示综合评估分数
+   - 提供具体优势和改进建议
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## 目前状态
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+当前版本为前端原型，使用模拟数据展示功能流程。后端API尚未实现，因此所有数据处理都在前端进行模拟。 
