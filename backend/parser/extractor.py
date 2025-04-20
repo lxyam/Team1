@@ -19,7 +19,7 @@ class ResumeExtractor:
             api_key=self.api_key,
             base_url=self.api_base
         )
-
+        
     def extract(self, resume_text: str) -> dict:
         system_prompt = """你是一个专业的简历解析助手。请分析简历内容，提取以下信息并直接返回JSON格式数据（不要添加任何markdown标记）：
         {
@@ -80,14 +80,33 @@ class ResumeExtractor:
                 if key not in data:
                     data[key] = []
 
+            issues = self.check_resume_issues(data)
+            if issues:
+                raise ValueError(f"简历信息不足，存在以下问题：{'; '.join(issues)}")
+            
             return data
 
         except Exception as e:
             print(f"[❌] 提取失败: {e}")
-            return {
-                "education": [],
-                "projects": [],
-                "work_experience": [],
-                "skills": [],
-                "advantages": []
-            }
+            return data
+        
+    def check_resume_issues(self, data: dict) -> list:
+        issues = []
+
+        if not data["projects"]:
+            issues.append("缺少项目经历")
+        else:
+            for p in data["projects"]:
+                if not p["technologies"]:
+                    issues.append(f"项目《{p['name']}》缺少技术栈")
+                if not p["achievements"]:
+                    issues.append(f"项目《{p['name']}》缺少成果描述")
+                if not any(keyword in ''.join(p["description"]) for keyword in ["模型", "算法", "流程", "方案", "方法"]):
+                    issues.append(f"项目《{p['name']}》方法描述不具体")
+
+        if not data["advantages"]:
+            issues.append("缺少个人优势")
+        if not data["skills"]:
+            issues.append("缺少技能列表")
+
+        return issues

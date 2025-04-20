@@ -19,7 +19,7 @@ def run_flask_app():
     app.run(host="127.0.0.1", port=5088)
 
 def test_resume_extraction():
-    test_file_path = os.path.join(os.path.dirname(__file__), "data/test.docx")
+    test_file_path = os.path.join(os.path.dirname(__file__), "data/test_problematic_resume.docx")
     assert os.path.exists(test_file_path), "测试文件不存在"
 
     with open(test_file_path, "rb") as f:
@@ -34,7 +34,7 @@ def test_resume_extraction():
         output_dir = os.path.join(os.path.dirname(__file__), "data")
         os.makedirs(output_dir, exist_ok=True)  # 如果 data 目录不存在，自动创建
 
-        output_file = os.path.join(output_dir, "test_extractor.json")
+        output_file = os.path.join(output_dir, "test_extractor_problematic.json")
 
         # 保存为 JSON 文件
         with open(output_file, "w", encoding="utf-8") as f:
