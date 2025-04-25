@@ -9,7 +9,11 @@ class AdvantageQAGenerator:
         self.url = kwargs.get("url", "https://api.siliconflow.cn/v1/chat/completions")
         self.token = kwargs.get("token", os.getenv("API_TOKEN"))
         self.model = kwargs.get("model", "Qwen/Qwen2.5-32B-Instruct")
-        self.system_prompt = """你是一个专业的面试官，请分析简历中的个人优势，对其进行评估并进行提问。提出3个问题，严格按照下面的JSON格式数据：
+        self.system_prompt = """你是一个专业的面试官，请针对简历中明确列出的专业技术领域（如机器学习、分布式系统等），深入探究以下三个维度：
+        1. 核心概念的技术原理掌握度
+        2. 行业技术演进的关键认知
+        3. 复杂技术问题的解决路径针对相关领域知识的具体细节进行提问。
+        提出3个相关领域的技术性问题，采用如下JSON格式：
         [
             {
                 "question": "问题内容",
@@ -41,9 +45,14 @@ class AdvantageQAGenerator:
         return response.json()
 
     def generate_pool(self, resume_json):
+        context = {
+            "skills": resume_json.get("skills", []),
+            "advantages": resume_json.get("advantages", []),
+        }
+        questions_context = json.dumps(context, ensure_ascii=False)
         messages = [
             {"role": "system", "content": self.system_prompt},
-            {"role": "user", "content": str(resume_json["advantages"])},
+            {"role": "user", "content": questions_context},
         ]
         response = json.loads(self.ask_api(messages)["choices"][0]["message"]["content"])
         return response
@@ -51,7 +60,10 @@ class AdvantageQAGenerator:
     def select_question(self, resume_json, questions_pool):
         context = {
             "questions_pool": questions_pool,
-            "candidate_info": {"skills": resume_json.get("skills", []), "experience": resume_json.get("experience", []), "education": resume_json.get("education", [])},
+            "candidate_info": {
+                "experience": resume_json.get("experience", []),
+                "education": resume_json.get("education", []),
+            },
         }
         questions_context = json.dumps(context, ensure_ascii=False)
         messages = [
