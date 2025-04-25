@@ -219,7 +219,7 @@ class ProjectQAGenerator:
                 # 构建上下文
                 context = f"""
                 你是一位正在参加技术面试的优秀候选人。请针对以下项目经历和面试官提出的问题，给出一个自然流畅、口语化、能打动面试官的高水平回答（不要书面语）：\n\n项目名称：{project_data.get('name', '')}\n项目描述：{project_data.get('description', '')}\n使用技术：{', '.join(project_data.get('technologies', []))}\n项目职责：{', '.join(project_data.get('responsibilities', []))}\n项目成就：{', '.join(project_data.get('achievements', []))}\n\n面试问题：{q.get('question', '')}\n"""
-                system_prompt = "你是一位优秀的技术应聘者，请用自然、流畅、口语化的表达方式，回答面试官的问题，突出你的专业能力、项目贡献和沟通能力，避免书面语和模板化。答案要简洁有逻辑，能让面试官留下深刻印象。只返回答案内容，不要添加任何说明。"
+                system_prompt = "你是一位优秀的技术应聘者，请用自然、流畅、口语化的表达方式，回答面试官的问题，突出你的专业能力、项目贡献和沟通能力，避免书面语和模板化。答案要简洁有逻辑，能让面试官留下深刻印象。只返回答案内容，不要添加任何说明。注意：不要以“这个问题问得好”类似话术开头，因为不符合你的应聘者身份"
                 response = self.client.chat.completions.create(
                     model=self.model,
                     messages=[
