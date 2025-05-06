@@ -17,7 +17,8 @@ class AdvantageQAGenerator:
         [
             {
                 "question": "问题内容",
-                "purpose": "提问目的"
+                "purpose": "提问目的",
+                "answer": "参考答案",
             },
             ...
         ]
@@ -26,6 +27,7 @@ class AdvantageQAGenerator:
         返回JSON格式数据：
         {
             "question": "问题内容",
+            "answer": "参考答案",
             "reason": "选择该问题的原因（需要结合候选人背景说明）"
         }
 
@@ -38,7 +40,10 @@ class AdvantageQAGenerator:
             "max_tokens": 4096,
             "response_format": {"type": "json_object"},
         }
-        headers = {"Authorization": f"Bearer {self.token}", "Content-Type": "application/json"}
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json",
+        }
 
         response = requests.request("POST", self.url, json=payload, headers=headers)
 
@@ -54,7 +59,9 @@ class AdvantageQAGenerator:
             {"role": "system", "content": self.system_prompt},
             {"role": "user", "content": questions_context},
         ]
-        response = json.loads(self.ask_api(messages)["choices"][0]["message"]["content"])
+        response = json.loads(
+            self.ask_api(messages)["choices"][0]["message"]["content"]
+        )
         return response
 
     def select_question(self, resume_json, questions_pool):
@@ -70,7 +77,9 @@ class AdvantageQAGenerator:
             {"role": "system", "content": self.interview_prompt},
             {"role": "user", "content": questions_context},
         ]
-        response = json.loads(self.ask_api(messages)["choices"][0]["message"]["content"])
+        response = json.loads(
+            self.ask_api(messages)["choices"][0]["message"]["content"]
+        )
         return response
 
     def generate(self, resume_json):
@@ -82,13 +91,33 @@ class AdvantageQAGenerator:
         }
 
 
-if __name__ == "__main__":
+def advantages_main(resume_json, out_path=None):
+    """
+    优势问题生成的主接口函数。
+
+    接收结构化的简历数据，生成问题池并从中选择最合适的问题。
+    可以选择将结果保存到指定路径。
+
+    Args:
+        resume_json: json格式的简历结构化数据
+        out_path: 可选，结果保存的文件路径。如果提供则将结果保存到该路径
+
+    Returns:
+        Dict[str, Any]: 返回选定的问题，包含question和answer字段
+    """
     gen = AdvantageQAGenerator()
-    file_path = "../test/data/test_extractor.json"
-    resume_json = json.load(open(file_path, "r"))
     res = gen.generate(resume_json)
     from pprint import pprint
 
     pprint(res)
-    out_path = "../result/advantages/text_advantages.json"
-    json.dump(res, open(out_path, "w", encoding="utf-8"), indent=4, ensure_ascii=False)
+    if out_path is not None:
+        json.dump(
+            res, open(out_path, "w", encoding="utf-8"), indent=4, ensure_ascii=False
+        )
+    return res["selected_question"]
+
+
+if __name__ == "__main__":
+    file_path = "../test/data/test_extractor.json"
+    resume_json = json.load(open(file_path, "r"))
+    advantages_main(resume_json, "../result/advantages/text_advantages.json")
