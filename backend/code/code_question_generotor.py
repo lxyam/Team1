@@ -172,11 +172,11 @@ class CodeQuestionGenerator:
         selected = self._select_best_question(question_pool, skills)
         return selected["question"], selected["answer"]
 
-def generate_interview_code_question(resume_file_path: str) -> Tuple[str, str]:
-    """从JSON格式的简历文件生成编程面试问题的API接口
-    
+def generate_interview_code_question(resume_data) -> Tuple[str, str]:
+    """从JSON格式的简历生成编程面试问题的API接口
+
     Args:
-        resume_file_path (str): 简历JSON文件的路径
+        resume_file_path (str): 简历JSON
             
     Returns:
         Tuple[str, str]: (问题, 参考答案)的元组
@@ -187,9 +187,6 @@ def generate_interview_code_question(resume_file_path: str) -> Tuple[str, str]:
         ValueError: 简历数据缺少必要字段时
     """
     try:
-        # 读取JSON文件
-        with open(resume_file_path, "r", encoding="utf-8") as f:
-            resume_data = json.load(f)
         
         # 验证skills字段
         if "skills" not in resume_data:
@@ -198,12 +195,9 @@ def generate_interview_code_question(resume_file_path: str) -> Tuple[str, str]:
         # 使用现有的生成器获取问题
         generator = CodeQuestionGenerator()
         return generator.get_question(resume_data)
-        
-    except FileNotFoundError:
-        print(f"错误: 找不到简历文件 {resume_file_path}")
-        raise
+
     except json.JSONDecodeError:
-        print(f"错误: {resume_file_path} 不是有效的JSON格式")
+        print(f"错误: {resume_data} 不是有效的JSON格式")
         raise
     except Exception as e:
         print(f"生成问题时发生错误: {str(e)}")
