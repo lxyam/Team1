@@ -27,7 +27,7 @@ except Exception as e:
 
 if resume:
     if len(check_resume_issues(resume)) != 0:
-        print('简历内容缺少需要补充')
+        print('简历内容缺少需要补充') # 返回给前端
     else:
         # 项目问答
         projects = projects_main(resume, client)
