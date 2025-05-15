@@ -15,7 +15,7 @@ import os
 from pathlib import Path
 
 class CodeQuestionGenerator:
-    def __init__(self):
+    def __init__(self, client):
         """初始化代码问题生成器，从.env文件加载配置"""
         # 加载.env文件
         env_path = '../.env'
@@ -26,13 +26,10 @@ class CodeQuestionGenerator:
         self.api_base = os.getenv('OPENAI_API_BASE')
         
         # 初始化OpenAI客户端
-        self.client = OpenAI(
-            api_key=self.api_key,
-            base_url=self.api_base
-        )
+        self.client = client
         
         # 加载其他配置
-        self.model = os.getenv('OPENAI_MODEL', 'deepseek-chat')
+        self.model = 'deepseek-chat'
         self.temperature = float(os.getenv('API_TEMPERATURE', 0.7))
         self.timeout = int(os.getenv('API_TIMEOUT', 30))
         self.max_retries = int(os.getenv('API_MAX_RETRIES', 3))
@@ -172,7 +169,7 @@ class CodeQuestionGenerator:
         selected = self._select_best_question(question_pool, skills)
         return selected["question"], selected["answer"]
 
-def generate_interview_code_question(resume_data) -> Tuple[str, str]:
+def generate_interview_code_question(resume_data, client) -> Tuple[str, str]:
     """从JSON格式的简历生成编程面试问题的API接口
 
     Args:
@@ -193,7 +190,7 @@ def generate_interview_code_question(resume_data) -> Tuple[str, str]:
             raise ValueError("简历数据中必须包含'skills'字段")
             
         # 使用现有的生成器获取问题
-        generator = CodeQuestionGenerator()
+        generator = CodeQuestionGenerator(client)
         return generator.get_question(resume_data)
 
     except json.JSONDecodeError:
