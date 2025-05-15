@@ -16,7 +16,7 @@ class ProjectQAGenerator:
     - 为选定的问题生成优秀的口语化参考答案。
     - 处理整个简历，为所有项目生成问题和答案。
     """
-    def __init__(self, **kwargs):
+    def __init__(self, client):
         """
         初始化 ProjectQAGenerator。
 
@@ -26,16 +26,10 @@ class ProjectQAGenerator:
                 api_base (str, optional): OpenAI API 基础 URL。默认为环境变量 OPENAI_API_BASE。
                 model (str, optional): 使用的 OpenAI 模型。默认为 "deepseek-chat"。
         """
-        # 从环境变量或kwargs加载API配置
-        self.api_key = kwargs.get("api_key", os.getenv("OPENAI_API_KEY"))
-        self.api_base = kwargs.get("api_base", os.getenv("OPENAI_API_BASE"))
-        self.model = kwargs.get("model", "deepseek-chat")
         
         # 初始化OpenAI客户端
-        self.client = OpenAI(
-            api_key=self.api_key,
-            base_url=self.api_base
-        )
+        self.model = "deepseek-chat"
+        self.client = client
         
         # 系统提示词
         self.system_prompt = """
@@ -234,7 +228,7 @@ class ProjectQAGenerator:
                 answers.append({"question": q.get("question", ""), "answer": f"生成答案失败: {e}"})
         return answers
 
-def projects_main(resume_data: Dict[str, Any]) -> Dict[str, Any]:
+def projects_main(resume_data: Dict[str, Any], client) -> Dict[str, Any]:
     """
     项目问题生成的主接口函数。
 
@@ -256,7 +250,7 @@ def projects_main(resume_data: Dict[str, Any]) -> Dict[str, Any]:
     dotenv.load_dotenv()
 
     # 初始化问题生成器实例
-    generator = ProjectQAGenerator()
+    generator = ProjectQAGenerator(client)
 
     # 为简历中的所有项目生成问题、选择问题并生成答案
     results = generator.generate_for_resume(resume_data)
@@ -277,11 +271,4 @@ def projects_main(resume_data: Dict[str, Any]) -> Dict[str, Any]:
     # 返回包含所有项目选定问题和答案的两个字典
     return final_a
 
-if __name__ == "__main__":
-    # 加载测试数据
-    file_path = os.path.join(os.path.dirname(__file__), "../test/data/test_extractor.json")
-    with open(file_path, "r", encoding="utf-8") as f:
-        resume_data = json.load(f)
-
-    print(projects_main(resume_data))
 
