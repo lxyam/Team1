@@ -9,13 +9,14 @@ import io
 
 load_dotenv()
 
-OPENAI_API_KEY = "sk-06a1fc23f04940cf93e06e4b39e1f949"
-OPENAI_API_BASE = "https://api.deepseek.com"
-OPENAI_MODEL = "deepseek-chat"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "sk-06a1fc23f04940cf93e06e4b39e1f949")
+OPENAI_API_BASE = os.getenv("OPENAI_API_BASE", "https://api.deepseek.com/v1")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "deepseek-chat")
 
 client = OpenAI(
     api_key=OPENAI_API_KEY,
-    base_url=OPENAI_API_BASE
+    base_url=OPENAI_API_BASE,
+    default_headers={"Authorization": f"Bearer {OPENAI_API_KEY}"}
 )
 
 def read_file_smart(file_source) -> str:
