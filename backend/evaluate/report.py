@@ -6,17 +6,23 @@ class InterviewManager:
         self.model = "deepseek-chat"
 
         self.reference_prompt = """
-        你是一个面试官，面前有一个求职者，基于以下问题，请生成一个完整、专业且符合标准的参考答案。请确保参考答案既真实又符合行业标准。
+        作为面试官，请基于以下问题生成一个完整、专业且符合标准的参考答案。确保答案既真实又符合行业标准。
         
-        要求：
-        - 提供详细的技术实现细节
-        - 展示对项目难点和解决方案的深入理解
-        - 体现良好的技术思维和表达能力
-        - 用自然口语表达，保持逻辑清晰，避免书面语
+        注意：
+        1. 不要使用任何特殊符号或标记（如 **, ---, # 等）
+        2. 不要使用 markdown 格式
+        3. 使用纯文本格式，可以用数字或中文符号标记列表
+        4. 段落之间用换行分隔
+        
+        答案要求：
+        1. 提供详细的技术实现细节
+        2. 展示对项目难点和解决方案的深入理解
+        3. 体现良好的技术思维和表达能力
+        4. 用自然口语表达，保持逻辑清晰，避免书面语
         """
 
         self.evaluation_prompt = """
-        你是一个面试官，负责对求职者的回答进行评分和评估。你必须严格按照指定的JSON格式返回评估结果，不要添加任何其他内容。
+        作为面试官，负责对求职者的回答进行评分和评估。你必须严格按照指定的JSON格式返回评估结果，不要添加任何其他内容。
 
         评分标准：
         1. 技术深度：是否展现了对技术细节的掌握和理解
@@ -25,10 +31,10 @@ class InterviewManager:
         4. 问题解决能力：是否展示出分析问题、解决问题的思路和执行力
 
         评分等级（A/B/C/D）：
-        - A：非常优秀 —— 回答全面、深入，技术细节丰富，条理清晰
-        - B：良好 —— 回答清晰，有一定深度，但仍可补充更详细的内容
-        - C：一般 —— 回答基本完整，但缺乏技术细节或逻辑性不强
-        - D：不合格 —— 回答模糊、内容错误或完全缺乏相关信息
+        A：非常优秀 - 回答全面、深入，技术细节丰富，条理清晰
+        B：良好 - 回答清晰，有一定深度，但仍可补充更详细的内容
+        C：一般 - 回答基本完整，但缺乏技术细节或逻辑性不强
+        D：不合格 - 回答模糊、内容错误或完全缺乏相关信息
 
         你必须返回如下格式的JSON，不要添加任何其他内容：
         {
@@ -119,6 +125,9 @@ def evaluation(client, projects, advantages, code, user_answers: dict):
     manager = InterviewManager(client)
     report = {"project_qa": [], "advantages": {}, "code": {}}
 
+    # 用于存储已经出现过的改进建议
+    seen_improvements = set()
+
     # 1. 项目评估
     for project_name, qa_list in projects.items():
         for qa in qa_list:
@@ -127,12 +136,24 @@ def evaluation(client, projects, advantages, code, user_answers: dict):
                 user_answer = qa["answer"]
                 reference_answer = manager.generate_reference_answer(question)
                 evaluation = manager.grade_and_evaluate(user_answer, reference_answer)
+                eval_dict = json.loads(evaluation)
+                
+                # 去重改进建议
+                for category in eval_dict:
+                    if eval_dict[category]["评分"] in ["C", "D"]:
+                        improvement_key = f"{category}: {eval_dict[category]['理由']}"
+                        if improvement_key not in seen_improvements:
+                            seen_improvements.add(improvement_key)
+                        else:
+                            # 如果已经存在相同类型的建议，移除当前的
+                            eval_dict[category]["理由"] = ""
+                
                 report["project_qa"].append({
                     "project_name": project_name,
                     "question": question,
                     "reference_answer": reference_answer,
                     "user_answer": user_answer,
-                    "evaluation": json.loads(evaluation)
+                    "evaluation": eval_dict
                 })
             except Exception as e:
                 print(f"Warning: Error processing project QA: {e}")
@@ -145,11 +166,23 @@ def evaluation(client, projects, advantages, code, user_answers: dict):
             user_answer = advantages["answer"]
             reference_answer = manager.generate_reference_answer(question)
             evaluation = manager.grade_and_evaluate(user_answer, reference_answer)
+            eval_dict = json.loads(evaluation)
+            
+            # 去重改进建议
+            for category in eval_dict:
+                if eval_dict[category]["评分"] in ["C", "D"]:
+                    improvement_key = f"{category}: {eval_dict[category]['理由']}"
+                    if improvement_key not in seen_improvements:
+                        seen_improvements.add(improvement_key)
+                    else:
+                        # 如果已经存在相同类型的建议，移除当前的
+                        eval_dict[category]["理由"] = ""
+            
             report["advantages"] = {
                 "question": question,
                 "reference_answer": reference_answer,
                 "user_answer": user_answer,
-                "evaluation": json.loads(evaluation)
+                "evaluation": eval_dict
             }
         except Exception as e:
             print(f"Warning: Error processing advantages: {e}")

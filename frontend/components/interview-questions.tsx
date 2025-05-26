@@ -270,26 +270,29 @@ export function InterviewQuestions({ questions, onComplete }: InterviewQuestions
             </div>
             
             {/* Answer input */}
+            {!isSubmitting ? (
             <div className="flex gap-3">
               <textarea
                 value={currentAnswer}
                 onChange={(e) => setCurrentAnswer(e.target.value)}
                 className="flex-1 rounded-md border-slate-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 min-h-[120px] p-3 resize-none"
                 placeholder="请在此处输入您的回答..."
-                disabled={isSubmitting}
               />
               <Button 
                 onClick={handleAnswerSubmit}
                 className="self-end"
-                disabled={currentAnswer.trim() === '' || isSubmitting}
+                  disabled={currentAnswer.trim() === ''}
               >
-                {isSubmitting ? (
-                  <span className="h-4 w-4 animate-spin rounded-full border-t-2 border-white"></span>
-                ) : (
                   <Send className="h-4 w-4" />
-                )}
               </Button>
             </div>
+            ) : (
+              <div className="bg-primary-50 border border-primary-200 rounded-lg p-6 text-center">
+                <div className="w-8 h-8 mx-auto mb-3 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+                <p className="text-primary-800 font-medium">面试已完成，正在提交您的回答...</p>
+                <p className="text-primary-600 text-sm mt-1">请稍候，系统将为您生成评估报告</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

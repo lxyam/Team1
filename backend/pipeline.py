@@ -20,32 +20,5 @@ client = OpenAI(
     default_headers={"Authorization": f"Bearer {OPENAI_API_KEY}"}
 )
 
-# 简历文件接受前端输入后存到test/data/test.docx
-file_path = "backend/test/data/test.docx"
-resume = None
-try:
-    resume = extract_resume(file_path)
-except Exception as e:
-    print('提取失败: 简历信息不足，存在缺少技术栈、成果描述或技能列表等问题，请补充后重新上传')
-
-if resume:
-    if len(check_resume_issues(resume)) != 0:
-        print('简历内容缺少需要补充') # 返回给前端
-    else:
-        # 项目问答
-        projects = projects_main(resume, client)
-        print(projects)
-        # 返回格式：{'project': [{'question': '', 'answer': ''}], ...}
-        # 个人优势
-        advantages = advantages_main(resume, client)
-        print(advantages)
-        # 返回格式：{'question': '', 'answer': '', 'reason': ''}
-        # 编程题
-        code = generate_interview_code_question(resume, client)
-        print(code)
-        # 返回格式： ('', '') (question, answer)的元组
-        ans = {} # todo: ans回答数据从前端传入
-        # 评估
-        final_report = evaluation(client, projects, advantages, code, ans)
-        print(final_report)
+# 只保留导入、client初始化和函数暴露，不要有任何主流程代码
 
