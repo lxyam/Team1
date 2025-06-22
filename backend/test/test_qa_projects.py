@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.WARNING)
 logging.getLogger('werkzeug').setLevel(logging.WARNING)
 logging.getLogger('openai').setLevel(logging.WARNING)
 logging.getLogger('openai._base_client').setLevel(logging.WARNING)
-logging.getLogger('backend.qa_engine').setLevel(logging.WARNING)
+logging.getLogger('qa_engine').setLevel(logging.WARNING)
 
 # 确保环境变量加载
 load_dotenv()

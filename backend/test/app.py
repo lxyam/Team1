@@ -94,7 +94,7 @@ def upload_resume():
             return jsonify({"error": "Unsupported file type"}), 400
 
         # 导入ResumeExtractor
-        from backend.parser.extractor import ResumeExtractor
+        from parser.extractor import ResumeExtractor
         
         extractor = ResumeExtractor()
         extracted_data = extractor.extract(text)
@@ -116,7 +116,7 @@ def generate_questions():
             return jsonify({"error": "Missing required fields: project and question_types"}), 400
 
         # 导入ProjectQAGenerator
-        from backend.qa_engine.item import ProjectQAGenerator
+        from qa_engine.item import ProjectQAGenerator
 
         # 创建问答生成器实例
         qa_generator = ProjectQAGenerator()

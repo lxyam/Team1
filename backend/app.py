@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Any
 import uvicorn
-from backend.pipeline import extract_resume, projects_main, advantages_main, generate_interview_code_question, evaluation, client
+from pipeline import extract_resume, projects_main, advantages_main, generate_interview_code_question, evaluation, client
 
 app = FastAPI()
 

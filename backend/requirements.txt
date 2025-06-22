@@ -15,3 +15,5 @@ flask-cors
 pytest
 requests
 Werkzeug
+chardet
+pdfplumber

@@ -2,11 +2,11 @@ from dotenv import load_dotenv
 from openai import OpenAI
 import os
 
-from backend.parser.extractor import extract_resume, check_resume_issues
-from backend.qa_engine.projects import projects_main
-from backend.qa_engine.advantages import advantages_main
-from backend.code.code_question_generotor import generate_interview_code_question
-from backend.evaluate.report import evaluation
+from parser.extractor import extract_resume, check_resume_issues
+from qa_engine.projects import projects_main
+from qa_engine.advantages import advantages_main
+from code.code_question_generotor import generate_interview_code_question
+from evaluate.report import evaluation
 
 load_dotenv()
 
