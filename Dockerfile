@@ -1,10 +1,4 @@
 FROM node:latest as frontend-builder
-WORKDIR /app
-COPY frontend/ .
-RUN npm config set registry http://registry.npmmirror.com && \
-	npm install && npm run build
-
-FROM python:3.8
 
 RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list && \
     sed -i 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list && \
@@ -17,17 +11,16 @@ RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list && \
 
 WORKDIR /app
 
+COPY frontend/ ./frontend/
 COPY backend/ ./backend/
-
-COPY --from=frontend-builder /app/build ./frontend/build
-
+COPY frontend/package.json ./package.json
 COPY .env .env
-
-WORKDIR /app/backend
 RUN pip install -r requirements.txt
 
-WORKDIR /app/frontend
-COPY frontend/package.json ./package.json
+
+RUN cd frontend && npm config set registry http://registry.npmmirror.com && \
+	npm install && npm run build
+
 RUN npm install --production
 
 EXPOSE 5000
