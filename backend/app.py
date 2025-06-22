@@ -37,8 +37,8 @@ async def upload_resume(file: UploadFile = File(...)):
         
         # 保存上传的文件
         import os
-        os.makedirs("backend/test/data", exist_ok=True)
-        file_path = f"backend/test/data/{file.filename}"
+        os.makedirs("test/data", exist_ok=True)
+        file_path = f"test/data/{file.filename}"
         
         with open(file_path, "wb") as buffer:
             buffer.write(content)

@@ -19,6 +19,8 @@ class CodeQuestionGenerator:
         """初始化代码问题生成器，从.env文件加载配置"""
         # 加载.env文件
         env_path = '../.env'
+        if not os.path.exists(env_path):
+            raise FileNotFoundError(f".env 文件未找到，请确保 {env_path} 存在！")
         load_dotenv(env_path)
         
         # 设置OpenAI配置
