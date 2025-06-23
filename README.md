@@ -49,6 +49,15 @@ pip install -r requirements.txt
 python app.py
 ```
 
+### 容器使用
+
+[镜像下载地址](https://pan.quark.cn/s/d9f0921b4dd0)
+
+```q
+docker load < smart-resume.tar
+docker run -d --network=host smart-resume:latest
+```
+
 ## 环境要求
 
 ### 前端
