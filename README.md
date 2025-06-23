@@ -64,7 +64,8 @@ python app.py
 1. 启动系统
    - 启动后端服务：`python app.py`
    - 启动前端服务：`npm start`
-
+   - 启动容器：`docker run -d --network=host smart-resume:latest`
+   
 2. 简历智能问答流程
    - 上传简历开始问答
    - 依次完成三个部分的问答：
