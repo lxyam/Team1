@@ -4,7 +4,7 @@
 
 ## 项目演示
 
-🎥 [点击观看项目演示视频]([[https://www.bilibili.com/video/BV1HERkYAE8D/])
+🎥 [点击观看项目演示视频](https://www.bilibili.com/video/BV19qKizsEcQ/)
 
 ## 功能特点
 
